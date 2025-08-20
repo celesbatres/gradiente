@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "47281990167",
+    "project_id": "gradienteauth",
+    "storage_bucket": "gradienteauth.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:47281990167:android:de0a17235ea280c2b80a52",
+        "android_client_info": {
+          "package_name": "com.celesbatres.gradiente"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "47281990167-qn4adhl3h8qfkvn5h51q9uq6oq4cb7ih.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.celesbatres.gradiente",
+            "certificate_hash": "1b583bcfac4480f6cfb8376b2815ed16b750727d"
+          }
+        },
+        {
+          "client_id": "47281990167-574h1h9df8tjscqok8ad83rfophcfrlf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2fXCbJOJ8LjowKPLaISjATe1QRADOmC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "47281990167-574h1h9df8tjscqok8ad83rfophcfrlf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
