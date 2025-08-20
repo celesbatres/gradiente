@@ -1,16 +1,24 @@
-# gradiente
+# Gradiente
 
-A new Flutter project.
+*From small steps to peak performance.*
 
-## Getting Started
+Gradiente es una aplicación en desarrollo que busca transformar los hábitos saludables en una experiencia motivadora y gamificada. Su objetivo es ayudar a las personas a construir constancia en áreas clave como ejercicio, alimentación, descanso y bienestar emocional, integrando tecnología, motivación y personalización.
 
-This project is a starting point for a Flutter application.
+🔹 Características principales (en construcción):
 
-A few resources to get you started if this is your first Flutter project:
+📱 Aplicación móvil desarrollada en Flutter.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+🔐 Autenticación con proveedores modernos (Firebase, Google, etc.).
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+🏃‍♂️ Integración con servicios de actividad física (Strava, Garmin, etc.).
+
+😴 Reconocimiento y análisis del sueño.
+
+🎮 Sistema de gamificación con logros, niveles y recompensas.
+
+🤖 Uso futuro de IA para generar roadmaps personalizados según hábitos y progreso.
+
+🌟 Visión del proyecto:
+Gradiente no es solo una app de hábitos, es un acompañante inteligente que impulsa a las personas a mejorar su calidad de vida de forma constante y divertida.
+
+💡 Proyecto abierto a contribuciones. Si quieres ser parte de algo que combina tecnología + motivación + bienestar, este es el lugar.
