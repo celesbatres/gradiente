@@ -5,6 +5,7 @@ import 'package:gradiente/constants.dart';
 import 'package:gradiente/custom_route.dart';
 import 'package:gradiente/dashboard_screen.dart';
 import 'package:gradiente/users.dart';
+import 'package:gradiente/widgets/habit_quiz_app.dart';
 import '../services/auth/auth_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -271,9 +272,10 @@ class LoginScreen extends StatelessWidget {
         return _signupUser(signupData);
       },
       onSubmitAnimationCompleted: () {
+        // Después del signup exitoso, ir directamente al cuestionario de hábitos
         Navigator.of(context).pushReplacement(
           FadePageRoute<void>(
-            builder: (context) => const DashboardScreen(),
+            builder: (context) => const HabitQuizApp(),
           ),
         );
       },
