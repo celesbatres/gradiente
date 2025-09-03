@@ -17,22 +17,13 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for android - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
@@ -66,6 +57,34 @@ class DefaultFirebaseOptions {
     messagingSenderId: '47281990167',
     projectId: 'gradienteauth',
     authDomain: 'gradienteauth.firebaseapp.com',
+    storageBucket: 'gradienteauth.firebasestorage.app',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBG3cA5b5vSwkSnsO75pqL272dEucmNOFQ',
+    appId: '1:47281990167:web:076554653031c756b80a52',
+    messagingSenderId: '47281990167',
+    projectId: 'gradienteauth',
+    authDomain: 'gradienteauth.firebaseapp.com',
+    storageBucket: 'gradienteauth.firebasestorage.app',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAepOJa_AG2C5Hi9ChZ-W5OQFHdlg2rZYE',
+    appId: '1:47281990167:ios:00f685491d5c5b2cb80a52',
+    messagingSenderId: '47281990167',
+    projectId: 'gradienteauth',
+    storageBucket: 'gradienteauth.firebasestorage.app',
+    androidClientId: '47281990167-qn4adhl3h8qfkvn5h51q9uq6oq4cb7ih.apps.googleusercontent.com',
+    iosClientId: '47281990167-3414hg7sbjfh546o12j9prf3oret7ht4.apps.googleusercontent.com',
+    iosBundleId: 'com.example.gradiente',
+  );
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyB2fXCbJOJ8LjowKPLaISjATe1QRADOmC8',
+    appId: '1:47281990167:android:f7ac637bfc97d16fb80a52',
+    messagingSenderId: '47281990167',
+    projectId: 'gradienteauth',
     storageBucket: 'gradienteauth.firebasestorage.app',
   );
 

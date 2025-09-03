@@ -1,15 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gradiente/dashboard_screen.dart';
 import 'package:gradiente/login_screen.dart';
+import 'package:gradiente/new_login_screen.dart';
 import 'package:gradiente/transition_route_observer.dart';
 
-void main() {
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
-      systemNavigationBarColor:
-          SystemUiOverlayStyle.dark.systemNavigationBarColor,
-    ),
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
 }
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textSelectionTheme:
-            const TextSelectionThemeData(cursorColor: Colors.orange),
+        const TextSelectionThemeData(cursorColor: Colors.orange),
         // fontFamily: 'SourceSansPro',
         textTheme: TextTheme(
           displaySmall: const TextStyle(
@@ -58,10 +60,11 @@ class MyApp extends StatelessWidget {
             .copyWith(secondary: Colors.orange),
       ),
       navigatorObservers: [TransitionRouteObserver()],
-      initialRoute: LoginScreen.routeName,
+      initialRoute: NewLoginScreen.routeName,
       routes: {
         LoginScreen.routeName: (context) => const LoginScreen(),
         DashboardScreen.routeName: (context) => const DashboardScreen(),
+        NewLoginScreen.routeName: (context) => const NewLoginScreen(),
       },
     );
   }
