@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "47281990167-evivoudodpkqrnf6d5fg4n56ufc5j63t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gradiente",
+            "certificate_hash": "1b583bcfac4480f6cfb8376b2815ed16b750727d"
+          }
+        },
+        {
           "client_id": "47281990167-574h1h9df8tjscqok8ad83rfophcfrlf.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -31,6 +31,27 @@
 
   <title>gradiente</title>
   <link rel="manifest" href="manifest.json">
+
+
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBG3cA5b5vSwkSnsO75pqL272dEucmNOFQ",
+      authDomain: "gradienteauth.firebaseapp.com",
+      projectId: "gradienteauth",
+      storageBucket: "gradienteauth.firebasestorage.app",
+      messagingSenderId: "47281990167",
+      appId: "1:47281990167:web:076554653031c756b80a52"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+  </script>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

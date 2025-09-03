@@ -4,9 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:gradiente/dashboard_screen.dart';
 import 'package:gradiente/login_screen.dart';
 import 'package:gradiente/new_login_screen.dart';
+import 'package:gradiente/profile.dart';
 import 'package:gradiente/transition_route_observer.dart';
 
 import 'firebase_options.dart';
+import 'navigation_example.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,6 +67,11 @@ class MyApp extends StatelessWidget {
         LoginScreen.routeName: (context) => const LoginScreen(),
         DashboardScreen.routeName: (context) => const DashboardScreen(),
         NewLoginScreen.routeName: (context) => const NewLoginScreen(),
+        // Add the new route:
+        NavigationBarApp.routeName: (context) => const NavigationBarApp(), // <--- ADD THIS LINE
+        // OR, if NavigationExample is sufficient and doesn't need its own MaterialApp from NavigationBarApp:
+        // NavigationExample.routeName: (context) => const NavigationExample(),
+        ProfileScreen.routeName: (context) => const ProfileScreen(),
       },
     );
   }

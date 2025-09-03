@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Para FirebaseAuthException
 import '../services/auth/auth_service.dart'; // Ajusta la ruta si es necesario
 import 'dashboard_screen.dart'; // Asegúrate que esta ruta es correcta
+import '../services/auth/auth_service2.dart';
+import 'navigation_example.dart';
 
 class NewLoginScreen extends StatefulWidget {
   const NewLoginScreen({super.key});
@@ -18,6 +20,7 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final AuthService _authService = AuthService(); // Instancia de tu servicio
+  final GoogleSignInService _googleAuthService = GoogleSignInService();
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -46,7 +49,7 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
           // Navegación exitosa al Dashboard
           if (mounted) { // Verifica si el widget sigue montado
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const DashboardScreen()),
+              MaterialPageRoute(builder: (context) => const NavigationExample()),
             );
           }
         } else {
@@ -182,20 +185,32 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
                 ),
 
                 // Opcional: Añadir un botón para ir a la pantalla de registro
-                // TextButton(
-                //   onPressed: () {
-                //     // Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpScreen()));
-                //   },
-                //   child: const Text('Don\'t have an account? Sign Up'),
-                // ),
+                TextButton(
+                  onPressed: () {
+                    // Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpScreen()));
+                  },
+                  child: const Text('Don\'t have an account? Sign Up'),
+                ),
 
                 // Opcional: Añadir un botón para "Olvidé mi contraseña"
-                // TextButton(
-                //   onPressed: () {
-                //     // Implementar recuperación de contraseña
-                //   },
-                //   child: const Text('Forgot Password?'),
-                // ),
+                TextButton(
+                  onPressed: () {
+                    // Implementar recuperación de contraseña
+                  },
+                  child: const Text('Forgot Password?'),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    textStyle: const TextStyle(fontSize: 18),
+                  ),
+                  onPressed: () {
+                    // Navegar a la pantalla de registro
+                    _authService.signInWithGoogle();
+                  },
+                  child: const Text('Sign In With Google'),
+                ),
               ],
             ),
           ),
