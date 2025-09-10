@@ -1,7 +1,7 @@
 // lib/pages/home_page.dart
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelssWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   Future<void> _openNumberModal(int index) async {}

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:gradiente/dashboard_screen.dart';
 import 'package:gradiente/login_screen.dart';
 import 'package:gradiente/new_login_screen.dart';
+import 'package:gradiente/pages/add_habito.dart';
 import 'package:gradiente/profile.dart';
 import 'package:gradiente/transition_route_observer.dart';
 
@@ -71,6 +72,7 @@ class MyApp extends StatelessWidget {
         // OR, if NavigationExample is sufficient and doesn't need its own MaterialApp from NavigationBarApp:
         // NavigationExample.routeName: (context) => const NavigationExample(),
         ProfileScreen.routeName: (context) => const ProfileScreen(),
+        AddHabitScreen.routeName: (context) => AddHabitScreen(),
       },
     );
   }

@@ -60,7 +60,25 @@ class AuthService {
       throw Exception("Error signing out: $e");
     }
   }
+  Future<void> deleteAccountFromGoogle() async {
+    try {
+      await _firebaseAuth.currentUser!.delete();
+      await _firebaseAuth.signOut();
+    } catch (e) {
+      throw Exception("Error deleting account: $e");
+    }
+  }
+  Future<UserCredential?> signUpWithGoogle() async {
+    final credential = await signInWithGoogle();
 
+    // Si es un nuevo usuario (primera vez que se registra con Google)
+    if (credential != null && credential.additionalUserInfo?.isNewUser == true) {
+      // Aquí podrías guardar info extra en Firestore si necesitas
+      print("Nuevo usuario registrado con Google: ${credential.user?.email}");
+    }
+
+    return credential;
+  }
   Future<UserCredential?> signInWithGoogle() async {
     try {
       if (kIsWeb) {
