@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 // TODO: add flutter_svg to pubspec.yaml
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gradiente/services/auth/auth_service2.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileScreen extends StatelessWidget {
+  // final AuthService authService;
   const ProfileScreen({super.key});
   static const String routeName = '/profile';
 
@@ -12,6 +15,7 @@ class ProfileScreen extends StatelessWidget {
     // we dont want to pop the screen, just replace it completely
         .then((_) => false);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +54,9 @@ class ProfileScreen extends StatelessWidget {
               text: "Log Out",
               icon: "assets/icons/Log out.svg",
               press: () {
-                _goToLogin(context);
+                AuthService().signOutFromGoogle();
+                Navigator.pushReplacementNamed(context, '/new_login');
+                // _goToLogin(context);
               },
             ),
           ],

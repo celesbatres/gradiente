@@ -67,7 +67,6 @@ class MyApp extends StatelessWidget {
         LoginScreen.routeName: (context) => const LoginScreen(),
         DashboardScreen.routeName: (context) => const DashboardScreen(),
         NewLoginScreen.routeName: (context) => const NewLoginScreen(),
-        // Add the new route:
         NavigationBarApp.routeName: (context) => const NavigationBarApp(), // <--- ADD THIS LINE
         // OR, if NavigationExample is sufficient and doesn't need its own MaterialApp from NavigationBarApp:
         // NavigationExample.routeName: (context) => const NavigationExample(),

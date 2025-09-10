@@ -123,18 +123,18 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
                 TextFormField(
                   controller: _emailController,
                   decoration: const InputDecoration(
-                    labelText: 'Email',
-                    hintText: 'Enter your email',
+                    labelText: 'Correo',
+                    hintText: 'Ingrese su correo',
                     prefixIcon: Icon(Icons.email),
                     border: OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your email';
+                      return 'Ingrese su correo por favor';
                     }
                     if (!value.contains('@') || !value.contains('.')) {
-                      return 'Please enter a valid email address';
+                      return 'Ingrese un correo electrónico válido';
                     }
                     return null;
                   },
@@ -143,19 +143,19 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: const InputDecoration(
-                    labelText: 'Password',
-                    hintText: 'Enter your password',
+                    labelText: 'Contraseña',
+                    hintText: 'Ingrese su contraseña',
                     prefixIcon: Icon(Icons.lock),
                     border: OutlineInputBorder(),
                   ),
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
+                      return 'Ingrese su contraseña por favor';
                     }
                     if (value.length < 6) {
                       // Ajusta según los requerimientos de Firebase/AuthService
-                      return 'Password must be at least 6 characters';
+                      return 'La contraseña debe tener al menos 6 caracteres';
                     }
                     return null;
                   },
@@ -181,23 +181,7 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
                     textStyle: const TextStyle(fontSize: 18),
                   ),
                   onPressed: _login,
-                  child: const Text('Login'),
-                ),
-
-                // Opcional: Añadir un botón para ir a la pantalla de registro
-                TextButton(
-                  onPressed: () {
-                    // Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpScreen()));
-                  },
-                  child: const Text('Don\'t have an account? Sign Up'),
-                ),
-
-                // Opcional: Añadir un botón para "Olvidé mi contraseña"
-                TextButton(
-                  onPressed: () {
-                    // Implementar recuperación de contraseña
-                  },
-                  child: const Text('Forgot Password?'),
+                  child: const Text('Iniciar sesión'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
@@ -205,11 +189,39 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     textStyle: const TextStyle(fontSize: 18),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     // Navegar a la pantalla de registro
-                    _authService.signInWithGoogle();
+                    final userCredential = await _authService.signInWithGoogle();
+                    if (userCredential != null) {
+                      if (mounted) { // Verifica si el widget sigue montado
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => const NavigationExample()),
+                        );
+                      }
+                    } else {
+                      // ❌ El usuario canceló o algo falló
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Inicio de sesión cancelado')),
+                      );
+                    }
                   },
-                  child: const Text('Sign In With Google'),
+                  child: const Text('Iniciar sesión con Google'),
+                ),
+
+                // Opcional: Añadir un botón para ir a la pantalla de registro
+                TextButton(
+                  onPressed: () {
+                    // Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUpScreen()));
+                  },
+                  child: const Text('¿No tienes una cuenta? Registrate'),
+                ),
+
+                // Opcional: Añadir un botón para "Olvidé mi contraseña"
+                TextButton(
+                  onPressed: () {
+                    // Implementar recuperación de contraseña
+                  },
+                  child: const Text('¿Olvidaste tu contraseña?'),
                 ),
               ],
             ),

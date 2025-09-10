@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'auth_exceptions.dart';
 
 class AuthService {
@@ -51,52 +52,49 @@ class AuthService {
     await _firebaseAuth.currentUser!.updatePassword(newPassword);
   }
 
+
+  Future<void> signOutFromGoogle() async {
+    try {
+      await _firebaseAuth.signOut();
+    } catch (e) {
+      throw Exception("Error signing out: $e");
+    }
+  }
+
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      await GoogleSignIn.instance.initialize();
-      final GoogleSignInAccount googleUser =
-      await GoogleSignIn.instance.authenticate(scopeHint: ['email']);
-      final GoogleSignInClientAuthorization? authorization;
-      authorization = await googleUser.authorizationClient
-          .authorizationForScopes(['email']);
-      final credential = GoogleAuthProvider.credential(
-        idToken: googleUser.authentication.idToken,
-        accessToken: authorization?.accessToken,
-      );
-// Firebase sign‑in
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+      if (kIsWeb) {
+        // --- Web ---
+        final googleProvider = GoogleAuthProvider();
+        googleProvider.setCustomParameters({
+          'prompt': 'select_account'  // 👈 fuerza selección de cuenta siempre
+        });
+        return await FirebaseAuth.instance.signInWithPopup(googleProvider);
+      } else {
+        // --- Mobile (manteniendo tu flujo actual) ---
+        await GoogleSignIn.instance.initialize();
+        final GoogleSignInAccount googleUser =
+        await GoogleSignIn.instance.authenticate(scopeHint: ['email']);
+
+        final GoogleSignInClientAuthorization? authorization =
+        await googleUser.authorizationClient
+            .authorizationForScopes(['email']);
+
+        final credential = GoogleAuthProvider.credential(
+          idToken: googleUser.authentication.idToken,
+          accessToken: authorization?.accessToken,
+        );
+
+        return await FirebaseAuth.instance.signInWithCredential(credential);
+      }
     } on GoogleSignInException catch (e) {
-// if (e.code.name == 'canceled') {
-// return null;
-// }
       throw TFirebaseAuthException(e.code.name).message;
     } on FirebaseAuthException catch (e) {
       throw TFirebaseAuthException(e.code).message;
     } on FormatException {
       throw 'Invalid format';
     } catch (e) {
-      throw 'Platform error occurred';
+      throw 'Platform error occurred: $e';
     }
   }
-
-//   return await FirebaseAuth.instance.signInWithCredential(credential);
-// }
-
-// final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
-//     final FirebaseAuth _auth = FirebaseAuth.instance;
-//     User? _user;
-
-// void signInwithGoogle()async
-// {
-//     final GoogleSignInAccount googleSignInAccount =
-//           await _googleSignIn.signIn();
-//     final GoogleSignInAuthentication googleSignInAuthentication =
-//           await googleSignInAccount.authentication;
-//     final AuthCredential credential = GoogleAuthProvider.getCredential(
-//           accessToken: googleSignInAuthentication.accessToken,
-//           idToken: googleSignInAuthentication.idToken,
-//     );
-//      await _auth.signInWithCredential(credential);
-//     _user=await _auth.currentUser();
-// }
 }

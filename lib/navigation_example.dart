@@ -1,19 +1,24 @@
-// C:/Users/celes/Documents/Uni/gradiente/lib/navigation_example.dart
+// lib/navigation_example.dart
 import 'package:flutter/material.dart';
-import 'package:gradiente/profile.dart';
+import 'package:gradiente/profile.dart'; // For Perfil navigation
 
-// void main() => runApp(const NavigationBarApp()); // You might not need this main if it's part of a larger app
+// Import the new page files
+import 'pages/home.dart';
+import 'pages/habitos.dart';
+import 'pages/registrar.dart';
+import 'pages/comunidad.dart';
 
 class NavigationBarApp extends StatelessWidget {
   const NavigationBarApp({super.key});
-
-  // Add a static routeName
   static const String routeName = '/navigation_example';
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp( // This MaterialApp is fine if NavigationBarApp is the entry for this route
-      home: NavigationExample(),
+    return MaterialApp(
+      home: const NavigationExample(),
+      routes: { // Define routes that might be pushed from within NavigationExample if needed
+        ProfileScreen.routeName: (context) => const ProfileScreen(),
+      },
     );
   }
 }
@@ -26,33 +31,35 @@ class NavigationExample extends StatefulWidget {
 }
 
 class _NavigationExampleState extends State<NavigationExample> {
-  int currentPageIndex = 0;
-  final List<bool> _notificationCheckboxStates = [false, false];
-  final List<bool> _habitsCheckboxStates = [false, false]; // For the "Hábitos" (Leer, Hidratarme) section
-  // Add more state lists if you have more lists of checkable items
+  int _currentPageIndex = 0; // Renamed for clarity
+
+  // List of Widgets for the body.
+  // These are now instances of your new page classes.
+  final List<Widget> _pages = const [
+    HomePage(),
+    HabitosPage(),
+    RegistrarPage(),
+    ComunidadPage(),
+    // We don't include a widget for "Perfil" here because we navigate away.
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    // final ThemeData theme = Theme.of(context); // Not needed here anymore
+
     return Scaffold(
-      // appBar: AppBar( // Optional: Add an AppBar if you want a title or back button handled by the Scaffold
-      //   title: const Text('Navigation Example'),
-      // ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
-          if (index == 4) { // Check if the "Perfil" destination is selected
+          if (index == 4) { // "Perfil" is the 5th item (index 4)
             Navigator.pushNamed(context, ProfileScreen.routeName);
-            // We don't call setState here to change currentPageIndex for "Perfil"
-            // because we are navigating away. If ProfileScreen was meant to be
-            // one of the bodies in the <Widget>[...] list, then you would update
-            // currentPageIndex.
           } else {
             setState(() {
-              currentPageIndex = index;
+              _currentPageIndex = index;
             });
           }
         },
         indicatorColor: Colors.amber,
-        selectedIndex: currentPageIndex,
+        selectedIndex: _currentPageIndex, // This will correctly show active tab unless Perfil is selected
         destinations: const <Widget>[
           NavigationDestination(
             selectedIcon: Icon(Icons.home),
@@ -73,168 +80,18 @@ class _NavigationExampleState extends State<NavigationExample> {
             icon: Badge(child: Icon(Icons.groups_sharp)),
             label: 'Comunidad',
           ),
-          // NavigationDestination(
-          //   icon: Badge(label: Text('2'), child: Icon(Icons.messenger_sharp)),
-          //   label: 'Messages',
-          // ),
           NavigationDestination(
             icon: Icon(Icons.person),
             label: 'Perfil',
           ),
         ],
       ),
-      body: <Widget>[
-        /// Home page
-        Card(
-          shadowColor: Colors.transparent,
-          margin: const EdgeInsets.all(8.0),
-          child: SizedBox.expand(
-            child: Center(child: Text('Home page', style: theme.textTheme.titleLarge)),
-          ),
-        ),
-
-
-
-        /// Notifications page
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              const Card(
-                child: ListTile(
-                  leading: Icon(Icons.book),
-                  title: Text('Leer'),
-                  subtitle: Text('Objetivo Diario: 10 minutos\nDuración: 1h\nGénero: Acción'),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.water_drop),
-                  title: const Text('Hidratarme'),
-                  subtitle: const Text('Objetivo Diario: 2 lts\nCantidad: 2 vasos'),
-                  trailing: Checkbox( // <--- CHECKBOX ADDED
-                    value: false, onChanged: (bool? value) {  },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        /// Notifications page
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            children:
-            <Widget>[
-              Row(
-                children: <Widget>[Text(
-                  "Elije una actividad",
-                  style: TextStyle(fontSize: 24.0), // fontSize is a double
-                )],
-              ),
-              const Card(
-                child: ListTile(
-                  leading: Icon(Icons.book),
-                  title: Text('Leer'),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  leading: const Icon(Icons.water_drop),
-                  title: const Text('Hidratarme'),
-                  ),
-                ),
-            ],
-          ),
-        ),
-
-        /// Notifications page
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              Card(
-                child: ListTile(
-                  leading: Icon(Icons.notifications_sharp),
-                  title: Text('Notification 1'),
-                  subtitle: Text('This is a notification'),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  leading: Icon(Icons.notifications_sharp),
-                  title: Text('Notification 2'),
-                  subtitle: Text('This is a notification'),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        /// Notifications page
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              Card(
-                child: ListTile(
-                  leading: Icon(Icons.notifications_sharp),
-                  title: Text('Notification 1'),
-                  subtitle: Text('This is a notification'),
-                ),
-              ),
-              Card(
-                child: ListTile(
-                  leading: Icon(Icons.notifications_sharp),
-                  title: Text('Notification 2'),
-                  subtitle: Text('This is a notification'),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        /// Messages page
-        ListView.builder(
-          reverse: true,
-          itemCount: 2,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == 0) {
-              return Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  margin: const EdgeInsets.all(8.0),
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Text(
-                    'Hello',
-                    style: theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onPrimary),
-                  ),
-                ),
-              );
-            }
-            return Align(
-              alignment: Alignment.centerLeft,
-              child: Container(
-                margin: const EdgeInsets.all(8.0),
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Text(
-                  'Hi!',
-                  style: theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onPrimary),
-                ),
-              ),
-            );
-          },
-        ),
-      ][currentPageIndex],
+      // Display the current page from the _pages list.
+      // If Perfil is selected (and we navigate away), this part might not be
+      // relevant as ProfileScreen takes over. We ensure _currentPageIndex doesn't go out of bounds.
+      body: _currentPageIndex < _pages.length
+          ? _pages[_currentPageIndex]
+          : Container(child: Center(child: Text("Error: Page index out of bounds or Profile selected."))), // Fallback
     );
   }
 }
