@@ -35,11 +35,11 @@ class _NavigationExampleState extends State<NavigationExample> {
 
   // List of Widgets for the body.
   // These are now instances of your new page classes.
-  final List<Widget> _pages = const [
+  final List<Widget> _pages = [
     HomePage(),
-    HabitosPage(),
-    RegistrarPage(),
-    ComunidadPage(),
+    const HabitosPage(),
+    const RegistrarPage(),
+    const ComunidadPage(),
     // We don't include a widget for "Perfil" here because we navigate away.
   ];
 
