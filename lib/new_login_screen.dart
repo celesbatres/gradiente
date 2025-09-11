@@ -100,9 +100,9 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Login'),
+      // ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
@@ -114,7 +114,7 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
               children: <Widget>[
                 // Aquí podrías añadir un logo o título
                 const Text(
-                  'Welcome Back!',
+                  '¡Bienvenido a Gradiente!',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
