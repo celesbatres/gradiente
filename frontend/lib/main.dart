@@ -5,6 +5,8 @@ import 'package:gradiente/dashboard_screen.dart';
 import 'package:gradiente/login_screen.dart';
 import 'package:gradiente/new_login_screen.dart';
 import 'package:gradiente/pages/add_habito.dart';
+import 'package:gradiente/pages/test_habits_api.dart';
+import 'package:gradiente/example_api_usage.dart';
 import 'package:gradiente/profile.dart';
 import 'package:gradiente/transition_route_observer.dart';
 
@@ -73,6 +75,8 @@ class MyApp extends StatelessWidget {
         // NavigationExample.routeName: (context) => const NavigationExample(),
         ProfileScreen.routeName: (context) => const ProfileScreen(),
         AddHabitScreen.routeName: (context) => AddHabitScreen(),
+        TestHabitsApiScreen.routeName: (context) => const TestHabitsApiScreen(),
+        ExampleApiUsageScreen.routeName: (context) => const ExampleApiUsageScreen(),
       },
     );
   }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:gradiente/services/api/user.dart';
 // Google Sign-In Service Class
 class GoogleSignInService {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -56,8 +57,16 @@ class GoogleSignInService {
             'createdAt': FieldValue.serverTimestamp(),
           });
         }
+        // review uid from database - using
+        final userUid = await UserApiService.getUser(user.uid);
+        print("userUid: $userUid");
+        if (userUid.isEmpty) {
+          print("Creando usuario en database");
+          throw FirebaseAuthException(code: "error", message: "error");
+          // create user in database
+        }
       }
-      return userCredential;
+      // return userCredential;
     } catch (e) {
       print('Error: $e');
       rethrow;

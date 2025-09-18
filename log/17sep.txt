@@ -1,0 +1,20 @@
+8:59 – Empecé con un remake de DB
+
+9:15 – Sigo refactorizando la db
+
+9:34 – Termino de refactorizar la db, estandaricé nombres de tablas y campos para que se muestren en inglés, definí mejor cuando se registra un hábito y la forma en la que se registra
+
+9:58 – Terminé de realizar los registros
+Se me presentó el problema: Error Code: 1005. Can't create table gradiente.user_habit (errno: 150 "Foreign key constraint is incorrectly form
+Y fue resuelto detectando que se intentaba asociar la tabla user con el identificador user cuando en realidad la tabla tenía como llave primaria el campo user_id
+Se rehicieron las tablas y se asignaron valores principales a las tablas
+
+10:01 – Deseamos asociar los valores encontrados en el firebase a usuarios en DB
+
+10:27 –
+El flujo para realizar lo anterior es: Cuando se inicia sesión o se crea una nueva cuenta, firebase devuelve un identificador unico (uid)… Se consulta en la bd si existe un registro en la tabla user que tenga asociado este uid, si es así entonces se obtiene su identificador (user) para realizar las consultas posteriores. De lo contrario, si no existe entonces se crea un registro user con su información.
+Para este tiempo, 
+•	he creado el endpoint en el directorio /backend/api/uid_user.php
+•	también cree el archivo de api /frontend/lib/services/api/uid_api_service.dart
+
+10:33 – Ahora sigue utilizar el api creado en la autenticación
