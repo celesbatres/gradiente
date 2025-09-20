@@ -9,12 +9,17 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      user: json['user'],
-      name: json['name'],
+      user: int.parse(json['user']),
+      name: json['name'] ?? '',
     );
   }
 
   existsUser() {
     return user != 0;
+  }
+
+  @override
+  String toString() {
+    return 'User{user: $user, name: $name}';
   }
 }

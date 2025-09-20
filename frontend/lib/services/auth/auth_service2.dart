@@ -87,6 +87,7 @@ class AuthService {
         googleProvider.setCustomParameters({
           'prompt': 'select_account'  // 👈 fuerza selección de cuenta siempre
         });
+
         return await FirebaseAuth.instance.signInWithPopup(googleProvider);
       } else {
         // --- Mobile (manteniendo tu flujo actual) ---
@@ -102,7 +103,7 @@ class AuthService {
           idToken: googleUser.authentication.idToken,
           accessToken: authorization?.accessToken,
         );
-
+        print("credential: $credential");
         return await FirebaseAuth.instance.signInWithCredential(credential);
       }
     } on GoogleSignInException catch (e) {

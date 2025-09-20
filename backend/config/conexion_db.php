@@ -1,6 +1,6 @@
 <?php
 $host = "localhost";
-$db = "gradiente_db";
+$db = "gradiente";
 $user = "root";
 $pass = "";
 

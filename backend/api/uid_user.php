@@ -18,11 +18,11 @@ header("Content-Type: application/json; charset=UTF-8");
 
 try {
     include("../config/conexion_db.php");
-    $firebase_uid = $_POST['firebase_uid'];
+    $firebase_uid = isset($_POST['firebase_uid']) ? $_POST['firebase_uid'] : '';
     $stmt = $pdo->prepare("
-            select user from user where firebase_uid = :firebase_uid;
+            select user, name from user where firebase_uid = :firebase_uid;
         ");
-    $stmt->execute(array(':firebase_uid' => $firebase_uid));
+    $stmt->execute([':firebase_uid' => $firebase_uid]);
     $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
     // Return JSON response
     echo json_encode([

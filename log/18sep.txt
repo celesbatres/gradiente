@@ -1,0 +1,5 @@
+Identifiqué el uid de firebase y pude obtener de la base de datos el identificador de user correspondiente
+: Siguente a realizar
+
+- Guardar el identificador de user globalmente o model User 
+- Hacer el sig up

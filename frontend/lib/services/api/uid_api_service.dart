@@ -6,8 +6,8 @@ class UidApiService {
   static const String baseUrl =
       'https://unpuritan-bryon-psittacistic.ngrok-free.app/api';
 
-  /// Get user id
-  static Future<List<User>> getUserId(String firebaseUid) async {
+  /// Get user by firebase uid (POST request)
+  static Future<User> getUserByFirebaseUid(String firebaseUid) async {
     try {
       final url = Uri.parse('$baseUrl/uid_user.php');
 
@@ -15,27 +15,26 @@ class UidApiService {
         url,
         headers: {
           'ngrok-skip-browser-warning': 'true',
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: json.encode({'firebase_uid': firebaseUid}),
+        body: 'firebase_uid=$firebaseUid',
       );
 
       print(response.body);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-
+        print(responseData);
         if (responseData['success'] == true) {
           final List<dynamic> jsonData = responseData['data'] ?? [];
-          return jsonData.map((json) => User.fromJson(json)).toList();
+          return jsonData.map((json) => User.fromJson(json)).first;
         } else {
           throw Exception(
             'API Error: ${responseData['error'] ?? 'Unknown error'}',
           );
         }
       } else {
-        throw Exception('Failed to load habits: ${response.statusCode}');
+        throw Exception('Failed to load user: ${response.statusCode}');
       }
     } catch (e) {
       if (e.toString().contains('FormatException') ||
@@ -50,7 +49,7 @@ class UidApiService {
           'CORS error: The server needs to allow cross-origin requests. Error: $e',
         );
       }
-      throw Exception('Error fetching habits: $e');
+      throw Exception('Error fetching user: $e');
     }
   }
 }
