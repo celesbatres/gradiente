@@ -1,0 +1,4 @@
+9:44
+
+Obtener los datos de LogIn/SignUp 
+Insertar nuevo usuario

@@ -1,60 +1,50 @@
 class Habit {
-  final int id;
+  final int habit;
+  final String? icon;
   final String name;
-  final int tipoHabitoId;
-  final String? descripcion;
-  final String? goal;
+  final String? description;
+  final int habitType;
+  final String units;
 
   Habit({
-    required this.id,
+    required this.habit,
+    this.icon,
     required this.name,
-    required this.tipoHabitoId,
-    this.descripcion,
-    this.goal,
+    this.description,
+    required this.habitType,
+    required this.units,
   });
 
   factory Habit.fromJson(Map<String, dynamic> json) {
     return Habit(
-      id: _parseId(json['id_habito'] ?? json['id']),
-      name: json['nombre'] as String,
-      tipoHabitoId: _parseTipoHabitoId(json['tipo_habito_id']),
-      descripcion: json['descripcion'] as String?,
-      goal: json['goal'] as String?,
+      habit: _parseId(json['habit'] ?? json['id']),
+      icon: json['icon'] as String?,
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      habitType: _parseId(json['habit_type']),
+      units: json['units'] as String,
     );
   }
 
   static int _parseId(dynamic value) {
-    if (value is int) {
-      return value;
-    } else if (value is String) {
-      return int.parse(value);
-    } else {
-      return 0;
-    }
-  }
-
-  static int _parseTipoHabitoId(dynamic value) {
-    if (value is int) {
-      return value;
-    } else if (value is String) {
-      return int.parse(value);
-    } else {
-      return 0;
-    }
+    if (value is int) return value;
+    if (value is String) return int.parse(value);
+    return 0;
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id_habito': id,
-      'nombre': name,
-      'tipo_habito_id': tipoHabitoId,
-      'descripcion': descripcion,
-      'goal': goal,
+      'habit': habit,
+      'icon': icon,
+      'name': name,
+      'description': description,
+      'habit_type': habitType,
+      'units': units,
     };
   }
 
   @override
   String toString() {
-    return 'Habit{id: $id, name: $name, tipoHabitoId: $tipoHabitoId, descripcion: $descripcion, goal: $goal}';
+    return 'Habit{habit: $habit, icon: $icon, name: $name, description: $description, habitType: $habitType, units: $units}';
   }
 }

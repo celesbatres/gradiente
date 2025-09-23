@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:gradiente/dashboard_screen.dart';
 import 'package:gradiente/login_screen.dart';
 import 'package:gradiente/new_login_screen.dart';
@@ -9,6 +10,8 @@ import 'package:gradiente/pages/test_habits_api.dart';
 import 'package:gradiente/example_api_usage.dart';
 import 'package:gradiente/profile.dart';
 import 'package:gradiente/transition_route_observer.dart';
+import 'package:gradiente/services/providers/auth_provider.dart';
+import 'package:gradiente/examples/simple_user_example.dart';
 
 import 'firebase_options.dart';
 import 'navigation_example.dart';
@@ -26,9 +29,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Login Demo',
-      debugShowCheckedModeBanner: false,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()..initializeAuth()),
+      ],
+      child: MaterialApp(
+        title: 'Login Demo',
+        debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textSelectionTheme:
         const TextSelectionThemeData(cursorColor: Colors.orange),
@@ -77,7 +84,9 @@ class MyApp extends StatelessWidget {
         AddHabitScreen.routeName: (context) => AddHabitScreen(),
         TestHabitsApiScreen.routeName: (context) => const TestHabitsApiScreen(),
         ExampleApiUsageScreen.routeName: (context) => const ExampleApiUsageScreen(),
+        '/user_example': (context) => const SimpleUserExample(),
       },
+      ),
     );
   }
 }

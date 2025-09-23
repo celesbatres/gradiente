@@ -20,11 +20,8 @@ class UidApiService {
         body: 'firebase_uid=$firebaseUid',
       );
 
-      print(response.body);
-
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        print(responseData);
         if (responseData['success'] == true) {
           final List<dynamic> jsonData = responseData['data'] ?? [];
           return jsonData.map((json) => User.fromJson(json)).first;
@@ -52,4 +49,32 @@ class UidApiService {
       throw Exception('Error fetching user: $e');
     }
   }
+
+  static Future<String?> createUser(String firebaseUid, String name) async {
+  try {
+    final url = Uri.parse('$baseUrl/insert_user.php');
+    final response = await http.post(
+      url,
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'firebase_uid=$firebaseUid&name=$name',
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      if (responseData['success'] == true) {
+        return responseData['user'].toString(); // 👈 Devuelve el user
+      }
+    } else {
+      throw Exception('Failed to create user: ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception('Error creating user: $e');
+  }
+
+  return null; // 👈 Devuelve null si no hubo éxito
+}
+
 }

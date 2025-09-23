@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 // TODO: add flutter_svg to pubspec.yaml
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gradiente/services/auth/auth_service2.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:gradiente/services/providers/auth_provider.dart' as AuthProvider;
+import 'package:gradiente/new_login_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   // final AuthService authService;
   const ProfileScreen({super.key});
   static const String routeName = '/profile';
 
-  Future<bool> _goToLogin(BuildContext context) {
-    return Navigator.of(context)
-        .pushReplacementNamed('/new_login')
-    // we dont want to pop the screen, just replace it completely
-        .then((_) => false);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +48,12 @@ class ProfileScreen extends StatelessWidget {
             ProfileMenu(
               text: "Log Out",
               icon: "assets/icons/Log out.svg",
-              press: () {
-                AuthService().signOutFromGoogle();
-                Navigator.pushReplacementNamed(context, '/new_login');
-                // _goToLogin(context);
+              press: () async {
+                final authProvider = Provider.of<AuthProvider.AuthProvider>(context, listen: false);
+                await authProvider.signOut();
+                if (context.mounted) {
+                  Navigator.of(context).pushReplacementNamed(NewLoginScreen.routeName);
+                }
               },
             ),
           ],

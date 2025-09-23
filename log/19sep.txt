@@ -5,3 +5,4 @@ Creación de Sign Up
 - Se deben mostrar las preguntas al primer momento de crear la cuenta, en cualquier tipo de registro.
 
 - También en el SignInWithGoogle(), incluso si un usuario no tiene cuenta y utiliza este metodo de inicio de sesión le crea la cuenta. Entonces debe identificar cuando sea nuevo para mostrarle el cuestionario.
+

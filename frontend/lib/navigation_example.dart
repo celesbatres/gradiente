@@ -1,6 +1,8 @@
 // lib/navigation_example.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:gradiente/profile.dart'; // For Perfil navigation
+import 'package:gradiente/services/providers/auth_provider.dart' as AuthProvider;
 
 // Import the new page files
 import 'pages/home.dart';
@@ -45,9 +47,24 @@ class _NavigationExampleState extends State<NavigationExample> {
 
   @override
   Widget build(BuildContext context) {
-    // final ThemeData theme = Theme.of(context); // Not needed here anymore
-
     return Scaffold(
+      appBar: AppBar(
+        title: Consumer<AuthProvider.AuthProvider>(
+          builder: (context, authProvider, child) {
+            // Verificar si hay usuario autenticado y logueado
+            if (authProvider.isAuthenticated && 
+                authProvider.userProvider.isLoggedIn && 
+                authProvider.userProvider.currentUser != null) {
+              final userName = authProvider.userProvider.currentUser!.name;
+              return Text('Bienvenid@, $userName');
+            }
+            return const Text('Bienvenid@');
+          },
+        ),
+        backgroundColor: Colors.deepPurple,
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           if (index == 4) { // "Perfil" is the 5th item (index 4)

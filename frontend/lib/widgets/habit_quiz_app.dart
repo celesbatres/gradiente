@@ -175,7 +175,7 @@ class _QuizScreenState extends State<QuizScreen> {
     
     // Navegar al dashboard después de completar el cuestionario
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacementNamed('/dashboard');
+      Navigator.of(context).pushReplacementNamed('/navigation_example');
     });
   }
 

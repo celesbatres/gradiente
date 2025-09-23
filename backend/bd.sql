@@ -19,6 +19,7 @@ CREATE TABLE user (
     user INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     age INT,
+    gender VARCHAR(10),
     wake_up TIME,
     go_to_bed TIME,
     add_date DATE
@@ -64,14 +65,18 @@ CREATE TABLE habit_register (
     FOREIGN KEY (user_habit) REFERENCES user_habit(user_habit)
 );
 
--- creación de registro de goals <- llevar un registro de todos los goals para que se observe como estos van cambiando en el tiempo
 CREATE TABLE goal (
     goal INT AUTO_INCREMENT PRIMARY KEY,
     user_habit INT NOT NULL,
+    quantity INT,
+    days INT,
     actual boolean,
     add_date DATE,
     FOREIGN KEY (user_habit) REFERENCES user_habit(user_habit)
 );
+
+-- creación de registro de goals <- llevar un registro de todos los goals para que se observe como estos van cambiando en el tiempo
+ 
 
 select * from user_habit;
 
