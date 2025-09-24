@@ -18,12 +18,12 @@ header("Content-Type: application/json; charset=UTF-8");
 
 try {
     include("../config/conexion_db.php");
-
+    $user_id = isset($_POST['user']) ? $_POST['user'] : '';
     $stmt = $pdo->prepare("
-            select h.nombre, h.tipo_habito_id from habits_user hu join habito h on h.id_habito=hu.habit_id where hu.user_id = 1;
+            select h.name, h.habit_type from user_habit hu join habit h on h.habit=hu.habit where hu.user = :user;
         ");
 
-    $stmt->execute();
+    $stmt->execute([':user' => $user_id]);
     $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
     // Return JSON response
     echo json_encode([

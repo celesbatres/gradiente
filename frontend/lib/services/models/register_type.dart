@@ -9,7 +9,7 @@ class RegisterType {
 
   factory RegisterType.fromJson(Map<String, dynamic> json) {
     return RegisterType(
-      registerTypeId: _parseId(json['register_type_id'] ?? json['registerTypeId'] ?? json['register_type']),
+      registerTypeId: _parseId(json['register_type'] ?? json['registerTypeId'] ?? json['register_type']),
       name: json['name'] ?? '',
     );
   }
@@ -22,7 +22,7 @@ class RegisterType {
 
   Map<String, dynamic> toJson() {
     return {
-      'register_type_id': registerTypeId,
+      'register_type': registerTypeId,
       'name': name,
     };
   }

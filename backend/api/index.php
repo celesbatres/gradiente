@@ -1,7 +1,7 @@
 <?php
 include("../config/conexion_db.php");
 $stmt = $pdo->prepare("
-        select * from habito
+        select * from habit;
     ");
 
 $stmt->execute();

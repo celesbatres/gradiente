@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gradiente/services/models/habit.dart';
+import 'package:gradiente/services/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 import '../services/api/habit_api_service.dart';
 import '../services/models/habit_user.dart';
 
@@ -30,7 +32,9 @@ class _TestHabitsApiScreenState extends State<TestHabitsApiScreen> {
     });
 
     try {
-      final userHabits = await HabitApiService.getUserHabits();
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final userId = userProvider.currentUser?.user.toString() ?? '';
+      final userHabits = await HabitApiService.getUserHabits(userId);
       setState(() {
         habits = userHabits;
         isLoading = false;
@@ -113,7 +117,7 @@ class _TestHabitsApiScreenState extends State<TestHabitsApiScreen> {
                     Color backgroundColor;
                     Color borderColor;
                     
-                    if (habit.tipoHabitoId == 1) {
+                    if (habit.habitType == 1) {
                       // Tipo 1: Verde claro
                       backgroundColor = Colors.green.shade50;
                       borderColor = Colors.green.shade200;
@@ -134,10 +138,10 @@ class _TestHabitsApiScreenState extends State<TestHabitsApiScreen> {
                       child: Row(
                         children: [
                           Icon(
-                            habit.tipoHabitoId == 1 
+                            habit.habitType == 1 
                                 ? Icons.check_circle_outline 
                                 : Icons.cancel_outlined,
-                            color: habit.tipoHabitoId == 1 
+                            color: habit.habitType == 1 
                                 ? Colors.green.shade700 
                                 : Colors.red.shade700,
                             size: 20,
@@ -145,11 +149,11 @@ class _TestHabitsApiScreenState extends State<TestHabitsApiScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              habit.name,
+                              habit.name ?? '',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
-                                color: habit.tipoHabitoId == 1 
+                                color: habit.habitType == 1 
                                     ? Colors.green.shade800 
                                     : Colors.red.shade800,
                               ),

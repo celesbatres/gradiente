@@ -1,23 +1,24 @@
 import 'dart:convert';
 import 'package:gradiente/services/models/habit.dart';
 import 'package:http/http.dart' as http;
-import '../models/habit_user.dart';
+	import '../models/habit_user.dart';
 
 class HabitApiService {
   static const String baseUrl = 'https://unpuritan-bryon-psittacistic.ngrok-free.app/api';
   
   /// Get user habits (no parameters required)
-  static Future<List<HabitUser>> getUserHabits() async {
+  static Future<List<HabitUser>> getUserHabits(String userId) async {
     try {
       final url = Uri.parse('$baseUrl/get_user_habits.php');
       
-      final response = await http.get(
+      final response = await http.post(
         url,
         headers: {
           'ngrok-skip-browser-warning': 'true',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
           'Accept': 'application/json',
         },
+        body: 'user=$userId',
       );
 
       print(response.body);
@@ -58,9 +59,10 @@ class HabitApiService {
         },
       );
 
-      print(response.body);
+      // print(response.body);
 
       if (response.statusCode == 200) {
+        //print(response.body);
         final Map<String, dynamic> responseData = json.decode(response.body);
         
         if (responseData['success'] == true) {

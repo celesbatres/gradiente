@@ -1,45 +1,19 @@
 class HabitUser {
-  final int userHabitId;
-  final int userId;
-  final int habitId;
-  final int registerTypeId;
-  final int? quantityRegister;
-  final String addDate;
-  final String name;
-  final int tipoHabitoId;
-  final String? icon;
-  final String? description;
-  final String units;
+  final int? userHabitId;
+  final String? name;
+  final int? habitType;
 
   HabitUser({
     required this.userHabitId,
-    required this.userId,
-    required this.habitId,
-    required this.registerTypeId,
-    this.quantityRegister,
-    required this.addDate,
-    required this.name,
-    required this.tipoHabitoId,
-    this.icon,
-    this.description,
-    required this.units,
+    this.name,
+    this.habitType,
   });
 
   factory HabitUser.fromJson(Map<String, dynamic> json) {
     return HabitUser(
       userHabitId: _parseId(json['user_habit_id'] ?? json['userHabitId']),
-      userId: _parseId(json['user_id'] ?? json['userId']),
-      habitId: _parseId(json['habit_id'] ?? json['habitId']),
-      registerTypeId: _parseId(json['register_type_id'] ?? json['registerTypeId']),
-      quantityRegister: json['quantity_register'] != null 
-          ? int.tryParse(json['quantity_register'].toString()) 
-          : null,
-      addDate: json['add_date'] ?? json['addDate'] ?? '',
-      name: json['name'] ?? json['nombre'] ?? '',
-      tipoHabitoId: _parseId(json['tipo_habito_id'] ?? json['tipoHabitoId']),
-      icon: json['icon'] as String?,
-      description: json['description'] as String?,
-      units: json['units'] ?? '',
+      name: json['name'] ?? json['nombre'],
+      habitType: _parseId(json['habit_type_id'] ?? json['habitTypeId']),
     );
   }
 
@@ -52,21 +26,13 @@ class HabitUser {
   Map<String, dynamic> toJson() {
     return {
       'user_habit_id': userHabitId,
-      'user_id': userId,
-      'habit_id': habitId,
-      'register_type_id': registerTypeId,
-      'quantity_register': quantityRegister,
-      'add_date': addDate,
       'name': name,
-      'tipo_habito_id': tipoHabitoId,
-      'icon': icon,
-      'description': description,
-      'units': units,
+      'habit_type_id': habitType,
     };
   }
 
   @override
   String toString() {
-    return 'HabitUser{userHabitId: $userHabitId, userId: $userId, habitId: $habitId, registerTypeId: $registerTypeId, quantityRegister: $quantityRegister, addDate: $addDate, name: $name, tipoHabitoId: $tipoHabitoId, icon: $icon, description: $description, units: $units}';
+    return 'HabitUser{userHabitId: $userHabitId, name: $name, habitType: $habitType}';
   }
 }

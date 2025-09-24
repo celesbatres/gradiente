@@ -11,6 +11,7 @@ import 'package:gradiente/example_api_usage.dart';
 import 'package:gradiente/profile.dart';
 import 'package:gradiente/transition_route_observer.dart';
 import 'package:gradiente/services/providers/auth_provider.dart';
+import 'package:gradiente/services/providers/user_provider.dart';
 import 'package:gradiente/examples/simple_user_example.dart';
 
 import 'firebase_options.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()..initializeAuth()),
+        ChangeNotifierProvider(create: (_) => UserProvider()..initializeUser()),
       ],
       child: MaterialApp(
         title: 'Login Demo',

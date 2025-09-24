@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gradiente/services/models/habit_user.dart';
+import 'package:gradiente/services/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 import '../services/api/habit_api_service.dart';
 import 'add_habito.dart';
 
@@ -29,7 +31,10 @@ class _HabitosPageState extends State<HabitosPage> {
     });
 
     try {
-      final habits = await HabitApiService.getUserHabits();
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      // final userId = userProvider.currentUser?.user.toString() ?? '';
+      print(userProvider.currentUser?.user.toString() ?? '');
+      final habits = await HabitApiService.getUserHabits(userProvider.currentUser?.user.toString() ?? '');
       setState(() {
         _habitos = habits;
         _habitosCheckboxStates = List.filled(habits.length, false);
@@ -96,7 +101,7 @@ class _HabitosPageState extends State<HabitosPage> {
     Color borderColor;
     IconData iconData;
     
-    if (habitUser.tipoHabitoId == 1) {
+    if (habitUser.habitType == 1) {
       // Tipo 1: Verde
       backgroundColor = Colors.green.shade50;
       borderColor = Colors.green.shade200;
@@ -118,23 +123,23 @@ class _HabitosPageState extends State<HabitosPage> {
       child: ListTile(
         leading: Icon(
           iconData,
-          color: habitUser.tipoHabitoId == 1 
+          color: habitUser.habitType == 1 
               ? Colors.green.shade700 
               : Colors.red.shade700,
         ),
         title: Text(
-          habitUser.name,
+          habitUser.name ?? '',
           style: TextStyle(
-            color: habitUser.tipoHabitoId == 1 
+            color: habitUser.habitType == 1 
                 ? Colors.green.shade800 
                 : Colors.red.shade800,
             fontWeight: FontWeight.w500,
           ),
         ),
         subtitle: Text(
-          habitUser.tipoHabitoId == 1 ? 'Hábito positivo' : 'Hábito a evitar',
+          habitUser.habitType == 1 ? 'Hábito positivo' : 'Hábito a evitar',
           style: TextStyle(
-            color: habitUser.tipoHabitoId == 1 
+            color: habitUser.habitType == 1 
                 ? Colors.green.shade600 
                 : Colors.red.shade600,
             fontSize: 12,
@@ -147,7 +152,7 @@ class _HabitosPageState extends State<HabitosPage> {
               _habitosCheckboxStates[index] = value!;
             });
           },
-          activeColor: habitUser.tipoHabitoId == 1 
+          activeColor: habitUser.habitType == 1 
               ? Colors.green 
               : Colors.red,
         ),

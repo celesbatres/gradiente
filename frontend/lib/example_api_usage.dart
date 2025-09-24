@@ -12,7 +12,7 @@ class ExampleApiUsage {
       print('Fetching habits (no parameters)');
       
       // Call the API service to get user habits
-      List<HabitUser> habits = await HabitApiService.getUserHabits();
+      List<HabitUser> habits = await HabitApiService.getUserHabits(1.toString());
       
       print('Successfully fetched ${habits.length} habits:');
       
@@ -21,7 +21,7 @@ class ExampleApiUsage {
         HabitUser habit = habits[i];
         print('Habit ${i + 1}:');
         print('  Name: ${habit.name}');
-        print('  Type: ${habit.tipoHabitoId} (${habit.tipoHabitoId == 1 ? 'Verde' : 'Rojo'})');
+        print('  Type: ${habit.habitType} (${habit.habitType == 1 ? 'Verde' : 'Rojo'})');
         print('---');
       }
       
@@ -33,7 +33,7 @@ class ExampleApiUsage {
   /// Example function showing how to use the API in a Flutter widget
   static Widget buildHabitsList() {
     return FutureBuilder<List<HabitUser>>(
-      future: HabitApiService.getUserHabits(),
+      future: HabitApiService.getUserHabits(1.toString()),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -72,10 +72,10 @@ class ExampleApiUsage {
             HabitUser habit = snapshot.data![index];
             
             // Determinar el color según el tipo de hábito
-            Color backgroundColor = habit.tipoHabitoId == 1 
+            Color backgroundColor = habit.habitType == 1 
                 ? Colors.green.shade50 
                 : Colors.red.shade50;
-            Color textColor = habit.tipoHabitoId == 1 
+            Color textColor = habit.habitType == 1 
                 ? Colors.green.shade800 
                 : Colors.red.shade800;
             
@@ -86,7 +86,7 @@ class ExampleApiUsage {
                 color: backgroundColor,
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
-                  color: habit.tipoHabitoId == 1 
+                  color: habit.habitType == 1 
                       ? Colors.green.shade200 
                       : Colors.red.shade200,
                 ),
@@ -94,7 +94,7 @@ class ExampleApiUsage {
               child: Row(
                 children: [
                   Icon(
-                    habit.tipoHabitoId == 1 
+                    habit.habitType == 1 
                         ? Icons.check_circle_outline 
                         : Icons.cancel_outlined,
                     color: textColor,
@@ -103,7 +103,7 @@ class ExampleApiUsage {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      habit.name,
+                      habit.name ?? '',
                       style: TextStyle(
                         fontSize: 14,
                         color: textColor,

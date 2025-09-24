@@ -20,7 +20,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   
   // Variables para el formulario
   Habit? _selectedHabit;
-  RegisterType? _selectedRegisterType;
+  // RegisterType? _selectedRegisterType;
   int? _quantityRegister;
   
   // Variables para el objetivo inicial
@@ -28,8 +28,9 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   int? _goalDays;
   
   // Listas de datos
-  List<Habit> _habits = [];
-  List<RegisterType> _registerTypes = [];
+  List<Habit> _habits = []; 
+
+  // List<RegisterType> _registerTypes = [];
   
   // Estado de carga
   bool _isLoading = true;
@@ -44,12 +45,13 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   Future<void> _loadData() async {
     try {
       final habits = await HabitApiService.getHabits();
-      final registerTypes = await RegisterTypeApiService.getRegisterTypes();
+      // final registerTypes = await RegisterTypeApiService.getRegisterTypes();
       
       setState(() {
         _habits = habits;
-        _registerTypes = registerTypes;
+        // _registerTypes = registerTypes;
         _isLoading = false;
+        _errorMessage = null;
       });
     } catch (e) {
       setState(() {
@@ -61,7 +63,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
+   /* if (_isLoading) {
       return Scaffold(
         appBar: AppBar(title: Text("Nuevo Hábito")),
         body: Center(child: CircularProgressIndicator()),
@@ -96,7 +98,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
             children: [
               // Selector de hábito existente
               DropdownButtonFormField<Habit>(
-                value: _selectedHabit,
+                initialValue: _selectedHabit,
                 items: _habits
                     .map((habit) => DropdownMenuItem(
                           value: habit,
@@ -116,43 +118,43 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
               SizedBox(height: 16),
 
               // Selector de tipo de registro
-              DropdownButtonFormField<RegisterType>(
-                value: _selectedRegisterType,
-                items: _registerTypes
-                    .map((type) => DropdownMenuItem(
-                          value: type,
-                          child: Text(_getRegisterTypeDisplayName(type.name)),
-                        ))
-                    .toList(),
-                onChanged: (value) => setState(() => _selectedRegisterType = value),
-                decoration: InputDecoration(labelText: "Tipo de Registro"),
-                validator: (value) => value == null ? "Selecciona un tipo de registro" : null,
-              ),
+              // DropdownButtonFormField<RegisterType>(
+              //   initialValue: _selectedRegisterType,
+              //   items: _registerTypes
+              //       .map((type) => DropdownMenuItem(
+              //             value: type,
+              //             child: Text(_getRegisterTypeDisplayName(type.name)),
+              //           ))
+              //       .toList(),
+              //   onChanged: (value) => setState(() => _selectedRegisterType = value),
+              //   decoration: InputDecoration(labelText: "Tipo de Registro"),
+              //   validator: (value) => value == null ? "Selecciona un tipo de registro" : null,
+              // ),
               SizedBox(height: 16),
 
               // Input condicional para cantidad cuando es suma
-              if (_selectedRegisterType?.isSumAmount == true) ...[
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: "Cantidad a sumar",
-                    hintText: "Ej: 1, 5, 10",
-                  ),
-                  keyboardType: TextInputType.number,
-                  onSaved: (value) => _quantityRegister = int.tryParse(value ?? ''),
-                  validator: (value) {
-                    if (_selectedRegisterType?.isSumAmount == true) {
-                      if (value == null || value.isEmpty) {
-                        return "Ingresa la cantidad a sumar";
-                      }
-                      if (int.tryParse(value) == null) {
-                        return "Ingresa un número válido";
-                      }
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16),
-              ],
+              // if (_selectedRegisterType?.isSumAmount == true) ...[
+              //   TextFormField(
+              //     decoration: InputDecoration(
+              //       labelText: "Cantidad a sumar",
+              //       hintText: "Ej: 1, 5, 10",
+              //     ),
+              //     keyboardType: TextInputType.number,
+              //     onSaved: (value) => _quantityRegister = int.tryParse(value ?? ''),
+              //     validator: (value) {
+              //       if (_selectedRegisterType?.isSumAmount == true) {
+              //         if (value == null || value.isEmpty) {
+              //           return "Ingresa la cantidad a sumar";
+              //         }
+              //         if (int.tryParse(value) == null) {
+              //           return "Ingresa un número válido";
+              //         }
+              //       }
+              //       return null;
+              //     },
+              //   ),
+              //   SizedBox(height: 16),
+              // ],
 
               // Sección de Objetivo Inicial
               Card(
@@ -220,6 +222,10 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
           ),
         ),
       ),
+    );*/
+    return Scaffold(
+      appBar: AppBar(title: Text("Nuevo Hábito")),
+      body: ,
     );
   }
 
@@ -260,7 +266,8 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
       final userHabitId = await UserHabitApiService.createUserHabit(
         userId: userId,
         habitId: _selectedHabit!.habit,
-        registerTypeId: _selectedRegisterType!.registerTypeId,
+        // registerTypeId: _selectedRegisterType!.registerTypeId,
+        registerTypeId: 1,
         quantityRegister: _quantityRegister,
       );
 
