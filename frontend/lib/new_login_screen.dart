@@ -23,6 +23,7 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
 
   bool _isSignUpMode = false;
 
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -247,7 +248,7 @@ class _NewLoginScreenState extends State<NewLoginScreen> {
                     onPressed: () {
                       // Implementar recuperación de contraseña
                     },
-                    child: const Text('¿Olvidaste tu contraseña?'                  ),
+                    child: const Text('¿Olvidaste tu contraseña?'),
                 ),
               ],
             ),

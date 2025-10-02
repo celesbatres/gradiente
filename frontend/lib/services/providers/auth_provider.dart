@@ -80,9 +80,9 @@ class AuthProvider extends ChangeNotifier {
 
       if (userCredential?.user != null) {
         _firebaseUser = userCredential!.user;
-        
+              
         // Crear usuario en la base de datos
-        await _userProvider.createUser(_firebaseUser!.uid, name);
+        await _userProvider.createUser( _firebaseUser!.uid, name);
         
         notifyListeners();
         return true;

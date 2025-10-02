@@ -6,8 +6,8 @@ class UidApiService {
   static const String baseUrl =
       'https://unpuritan-bryon-psittacistic.ngrok-free.app/api';
 
-  /// Get user by firebase uid (POST request)
-  static Future<User> getUserByFirebaseUid(String firebaseUid) async {
+  /// Get user by firebase uid (POST request) - returns null if not found
+  static Future<User?> getUserByFirebaseUid(String firebaseUid) async {
     try {
       final url = Uri.parse('$baseUrl/uid_user.php');
 
@@ -22,9 +22,15 @@ class UidApiService {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
+        print('API Response (getUserByFirebaseUid): $responseData');
         if (responseData['success'] == true) {
           final List<dynamic> jsonData = responseData['data'] ?? [];
-          return jsonData.map((json) => User.fromJson(json)).first;
+          if (jsonData.isNotEmpty) {
+            final user = jsonData.map((json) => User.fromJson(json)).first;
+            print('User parsed from API: $user');
+            return user;
+          }
+          return null; // Usuario no encontrado
         } else {
           throw Exception(
             'API Error: ${responseData['error'] ?? 'Unknown error'}',
@@ -64,8 +70,11 @@ class UidApiService {
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
+      print('API Response (createUser): $responseData');
       if (responseData['success'] == true) {
-        return responseData['user'].toString(); // 👈 Devuelve el user
+        final userId = responseData['user'].toString();
+        print('Created user ID: $userId');
+        return userId; // 👈 Devuelve el user
       }
     } else {
       throw Exception('Failed to create user: ${response.statusCode}');
@@ -76,5 +85,34 @@ class UidApiService {
 
   return null; // 👈 Devuelve null si no hubo éxito
 }
+
+  /// Get or create user - busca usuario por firebase_uid, si no existe lo crea
+  static Future<User> getOrCreateUser(String firebaseUid, String name) async {
+    try {
+      // Primero intentar buscar el usuario existente
+      final existingUser = await getUserByFirebaseUid(firebaseUid);
+      
+      if (existingUser != null) {
+        // Usuario existe, devolverlo
+        print('Usuario encontrado: $existingUser');
+        return existingUser;
+      }
+      
+      // Usuario no existe, crear uno nuevo
+      final userId = await createUser(firebaseUid, name);
+      if (userId != null) {
+        // Crear objeto User con los datos del nuevo usuario
+        return User(
+          user: int.parse(userId),
+          name: name,
+          firebaseUid: firebaseUid,
+        );
+      } else {
+        throw Exception('Error al crear usuario en la base de datos');
+      }
+    } catch (e) {
+      throw Exception('Error al obtener o crear usuario: $e');
+    }
+  }
 
 }

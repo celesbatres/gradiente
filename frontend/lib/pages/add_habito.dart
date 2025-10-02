@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:gradiente/services/api/habit_api_service.dart';
 import 'package:gradiente/services/api/register_type_api_service.dart';
 import 'package:gradiente/services/api/user_habit_api_service.dart';
 import 'package:gradiente/services/api/goal_api_service.dart';
-import 'package:gradiente/services/api/user.dart';
 import 'package:gradiente/services/models/habit.dart';
 import 'package:gradiente/services/models/register_type.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gradiente/services/providers/user_provider.dart';
 
 class AddHabitScreen extends StatefulWidget {
   static const String routeName = '/add_habit';
@@ -17,23 +17,24 @@ class AddHabitScreen extends StatefulWidget {
 
 class _AddHabitScreenState extends State<AddHabitScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   // Variables para el formulario
   Habit? _selectedHabit;
-  // RegisterType? _selectedRegisterType;
+  RegisterType? _selectedRegisterType;
   int? _quantityRegister;
-  
+  final TextEditingController _quantityController = TextEditingController();
+
   // Variables para el objetivo inicial
   int? _goalQuantity;
-  int? _goalDays;
-  
-  // Listas de datos
-  List<Habit> _habits = []; 
 
-  // List<RegisterType> _registerTypes = [];
-  
+  // Listas de datos
+  List<Habit> _habits = [];
+
+  List<RegisterType> _registerTypes = [];
+
   // Estado de carga
-  bool _isLoading = true;
+  bool _isLoading = false;
+  bool _isSaving = false;
   String? _errorMessage;
 
   @override
@@ -42,14 +43,30 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
     _loadData();
   }
 
+  @override
+  void dispose() {
+    _quantityController.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadData() async {
+    // Evitar múltiples llamadas simultáneas
+    if (_isLoading) return;
+    
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
     try {
       final habits = await HabitApiService.getHabits();
-      // final registerTypes = await RegisterTypeApiService.getRegisterTypes();
-      
+      final registerTypes = await RegisterTypeApiService.getRegisterTypes();
+
+      print('registerTypes: '+registerTypes.first.name);
+
       setState(() {
         _habits = habits;
-        // _registerTypes = registerTypes;
+        _registerTypes = registerTypes;
         _isLoading = false;
         _errorMessage = null;
       });
@@ -63,7 +80,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
 
   @override
   Widget build(BuildContext context) {
-   /* if (_isLoading) {
+    /* if (_isLoading) {
       return Scaffold(
         appBar: AppBar(title: Text("Nuevo Hábito")),
         body: Center(child: CircularProgressIndicator()),
@@ -167,6 +184,19 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                         "Objetivo Inicial",
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
+                      
+                      // Mostrar unidades del hábito seleccionado
+                      if (_selectedHabit != null) ...[
+                        SizedBox(height: 8),
+                        Text(
+                          "Unidades: ${_selectedHabit!.units}",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                      
                       SizedBox(height: 16),
                       
                       // Cantidad objetivo
@@ -187,26 +217,21 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                           return null;
                         },
                       ),
+                      
+                      // Mostrar unidades del hábito seleccionado
+                      if (_selectedHabit != null) ...[
+                        SizedBox(height: 8),
+                        Text(
+                          "Unidades: ${_selectedHabit!.units}",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                      
                       SizedBox(height: 16),
                       
-                      // Días objetivo
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: "Días para alcanzar el objetivo",
-                          hintText: "Ej: 30, 60, 90",
-                        ),
-                        keyboardType: TextInputType.number,
-                        onSaved: (value) => _goalDays = int.tryParse(value ?? ''),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Ingresa los días objetivo";
-                          }
-                          if (int.tryParse(value) == null) {
-                            return "Ingresa un número válido";
-                          }
-                          return null;
-                        },
-                      ),
                     ],
                   ),
                 ),
@@ -224,63 +249,278 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
       ),
     );*/
     return Scaffold(
-      appBar: AppBar(title: Text("Nuevo Hábito")),
-      body: ,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight + 16.0), // Ajusta la altura para el padding
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0), // Margen deseado
+          child: AppBar(title: Text("Nuevo Hábito")),
+        ),
+      ),
+      // appBar: AppBar(title: Text("Nuevo Hábito")),
+      
+      body: _isLoading 
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('Cargando datos...'),
+              ],
+            ),
+          )
+        : _errorMessage != null
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error, size: 64, color: Colors.red),
+                  SizedBox(height: 16),
+                  Text('Error: $_errorMessage'),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _loadData,
+                    child: Text('Reintentar'),
+                  ),
+                ],
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Form(
+                key: _formKey, // Assign the GlobalKey to the Form
+                child: Column(
+                  children: <Widget>[
+              // Selector de hábito
+              DropdownButtonFormField<Habit>(
+                initialValue: _selectedHabit,
+                items: _habits.map<DropdownMenuItem<Habit>>((Habit value) {
+                      return DropdownMenuItem<Habit>(
+                        value: value,
+                        child: Text(value.name),
+                      );
+                    }).toList(),
+                onChanged: (Habit? newValue) {
+                  setState(() {
+                    _selectedHabit = newValue;
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: 'Seleccionar Hábito',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              
+              SizedBox(height: 20), // Separación entre campos
+              
+              // Selector de tipo de registro
+              DropdownButtonFormField<RegisterType>(
+                initialValue: _selectedRegisterType,
+                items: _registerTypes.map<DropdownMenuItem<RegisterType>>((RegisterType value) {
+                      return DropdownMenuItem<RegisterType>(
+                        value: value,
+                        child: Text(value.name),
+                      );
+                    }).toList(),
+                onChanged: (RegisterType? newValue) {
+                  setState(() {
+                    _selectedRegisterType = newValue;
+                    // Limpiar el campo de cantidad cuando cambie el tipo de registro
+                    if (newValue?.register_type != 1) {
+                      _quantityController.clear();
+                    }
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: 'Tipo de Registro',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+
+              // Campo de entrada para cantidad cuando se selecciona sum_amount
+              if (_selectedRegisterType?.register_type == 1) ...[
+                SizedBox(height: 20), // Separación antes del campo condicional
+                TextFormField(
+                  controller: _quantityController,
+                  decoration: InputDecoration(
+                    labelText: 'Cantidad a agregar',
+                    hintText: 'Ej: 1, 5, 10',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (_selectedRegisterType?.register_type == 1) {
+                      if (value == null || value.isEmpty) {
+                        return "Ingresa la cantidad a agregar";
+                      }
+                      if (int.tryParse(value) == null) {
+                        return "Ingresa un número válido";
+                      }
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    if (_selectedRegisterType?.register_type == 1) {
+                      _quantityRegister = int.tryParse(value ?? '');
+                    }
+                  },
+                ),
+              ],
+              
+              SizedBox(height: 30), // Separación más grande antes del botón
+              // Sección de Objetivo Inicial
+              Card(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Objetivo Inicial",
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      
+                      // Mostrar unidades del hábito seleccionado
+                      
+                      
+                      SizedBox(height: 16),
+                      
+                      // Cantidad objetivo
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: "Cantidad Objetivo",
+                          hintText: "Ej: 30, 5, 100",
+                        ),
+                        keyboardType: TextInputType.number,
+                        onSaved: (value) => _goalQuantity = int.tryParse(value ?? ''),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Ingresa la cantidad objetivo";
+                          }
+                          if (int.tryParse(value) == null) {
+                            return "Ingresa un número válido";
+                          }
+                          return null;
+                        },
+                      ),
+                      
+                      // Mostrar unidades del hábito seleccionado
+                      if (_selectedHabit != null) ...[
+                        SizedBox(height: 8),
+                        Text(
+                          "Unidades: ${_selectedHabit!.units}",
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                      
+                      SizedBox(height: 16),
+                      
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              
+              // Botón de envío
+              SizedBox(
+                width: double.infinity, // Botón de ancho completo
+                child: ElevatedButton(
+                  onPressed: _isSaving ? null : () {
+                    // Validate returns true if the form is valid, or false otherwise.
+                    if (_formKey.currentState!.validate()) {
+                      _saveHabit();
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 16.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: _isSaving 
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Text('Guardando...'),
+                        ],
+                      )
+                    : Text('Guardar Hábito'),
+                ),
+              ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 
-  String _getRegisterTypeDisplayName(String typeName) {
-    switch (typeName.toLowerCase()) {
-      case 'sum_amount':
-        return 'Botón de suma de cantidades';
-      case 'put_amount':
-        return 'Botón de colocar cantidad';
-      default:
-        return typeName;
-    }
-  }
 
   Future<void> _saveHabit() async {
-    if (!_formKey.currentState!.validate()) return;
+    // Evitar múltiples envíos simultáneos
+    if (_isSaving) return;
     
+    if (!_formKey.currentState!.validate()) return;
+
     _formKey.currentState!.save();
 
+    setState(() {
+      _isSaving = true;
+    });
+
     try {
-      // Obtener el usuario actual
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
+      // Obtener el usuario actual desde el provider
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final currentUser = userProvider.currentUser;
+      
+      if (currentUser == null) {
         _showError("No hay usuario autenticado");
         return;
       }
 
-      // Obtener el ID del usuario desde la base de datos
-      final users = await UserApiService.getUser(user.uid);
-      if (users.isEmpty) {
-        _showError("Usuario no encontrado en la base de datos");
+      final userId = currentUser.user;
+
+      // Validar que se haya seleccionado un tipo de registro
+      if (_selectedRegisterType == null) {
+        _showError("Debes seleccionar un tipo de registro");
         return;
       }
 
-      final userId = users.first.user;
-
+      // Validar que se haya ingresado una cantidad objetivo
+      if (_goalQuantity == null) {
+        _showError("Debes ingresar una cantidad objetivo");
+        return;
+      }
+      
       // Crear el user_habit
       final userHabitId = await UserHabitApiService.createUserHabit(
         userId: userId,
         habitId: _selectedHabit!.habit,
-        // registerTypeId: _selectedRegisterType!.registerTypeId,
-        registerTypeId: 1,
+        registerTypeId: _selectedRegisterType!.register_type,
         quantityRegister: _quantityRegister,
       );
-
+      print('userHabitId: '+userHabitId.toString());
       if (userHabitId == null) {
         _showError("Error al crear el hábito del usuario");
         return;
       }
-      
-      // Crear el objetivo inicial
+
+      // Crear el objetivo inicial (siempre de 1 día como se especifica)
       final goalSuccess = await GoalApiService.createGoal(
         userHabitId: userHabitId,
         quantity: _goalQuantity,
-        days: _goalDays,
+        days: 1, // Siempre 1 día como se especifica
       );
 
       if (goalSuccess) {
@@ -291,24 +531,22 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
       }
     } catch (e) {
       _showError("Error: ${e.toString()}");
+    } finally {
+      setState(() {
+        _isSaving = false;
+      });
     }
   }
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
 
   void _showSuccess(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-      ),
+      SnackBar(content: Text(message), backgroundColor: Colors.green),
     );
   }
 }

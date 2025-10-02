@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gradiente/services/models/habit_user.dart';
-import 'package:gradiente/services/providers/user_provider.dart';
+import 'package:gradiente/services/providers/auth_provider.dart' as AuthProvider;
 import 'package:provider/provider.dart';
 import '../services/api/habit_api_service.dart';
 import 'add_habito.dart';
@@ -14,7 +14,6 @@ class HabitosPage extends StatefulWidget {
 
 class _HabitosPageState extends State<HabitosPage> {
   List<HabitUser> _habitos = [];
-  List<bool> _habitosCheckboxStates = [];
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -31,13 +30,16 @@ class _HabitosPageState extends State<HabitosPage> {
     });
 
     try {
-      final userProvider = Provider.of<UserProvider>(context, listen: false);
-      // final userId = userProvider.currentUser?.user.toString() ?? '';
-      print(userProvider.currentUser?.user.toString() ?? '');
-      final habits = await HabitApiService.getUserHabits(userProvider.currentUser?.user.toString() ?? '');
+      final authProvider = Provider.of<AuthProvider.AuthProvider>(context, listen: false);
+      print('Current User: ${authProvider.userProvider.currentUser}');
+      print('User object: ${authProvider.userProvider.currentUser?.user}');
+      print('Firebase UID: ${authProvider.userProvider.currentUser?.firebaseUid}');
+      final userId = authProvider.userProvider.currentUser?.user.toString() ?? '';
+      print('User ID (BD): $userId');
+      final habits = await HabitApiService.getUserHabits(userId);
       setState(() {
         _habitos = habits;
-        _habitosCheckboxStates = List.filled(habits.length, false);
+        print('habitos: '+_habitos.first.toString());
         _isLoading = false;
       });
     } catch (e) {
@@ -145,19 +147,57 @@ class _HabitosPageState extends State<HabitosPage> {
             fontSize: 12,
           ),
         ),
-        trailing: Checkbox(
-          value: _habitosCheckboxStates[index],
-          onChanged: (bool? value) {
-            setState(() {
-              _habitosCheckboxStates[index] = value!;
-            });
-          },
-          activeColor: habitUser.habitType == 1 
-              ? Colors.green 
-              : Colors.red,
+        trailing: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: habitUser.habitType == 1 
+                ? Colors.green.shade100 
+                : Colors.red.shade100,
+            border: Border.all(
+              color: habitUser.habitType == 1 
+                  ? Colors.green.shade300 
+                  : Colors.red.shade300,
+              width: 1,
+            ),
+          ),
+          child: IconButton(
+            onPressed: () {
+              // Aquí puedes agregar la lógica para incrementar el hábito
+              _incrementHabit(habitUser, index);
+            },
+            icon: Icon(
+              Icons.add,
+              color: habitUser.habitType == 1 
+                  ? Colors.green.shade700 
+                  : Colors.red.shade700,
+              size: 20,
+            ),
+            padding: EdgeInsets.all(8),
+            constraints: BoxConstraints(
+              minWidth: 32,
+              minHeight: 32,
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  void _incrementHabit(HabitUser habitUser, int index) {
+    // Aquí puedes implementar la lógica para incrementar el hábito
+    // Por ejemplo, mostrar un diálogo, hacer una llamada a la API, etc.
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${habitUser.name} incrementado!'),
+        backgroundColor: habitUser.habitType == 1 
+            ? Colors.green 
+            : Colors.red,
+        duration: Duration(seconds: 2),
+      ),
+    );
+    
+    // Aquí podrías agregar la lógica para actualizar el hábito en la base de datos
+    // Por ejemplo: await HabitApiService.incrementHabit(habitUser.userHabitId);
   }
 
   @override

@@ -56,7 +56,7 @@ class _NavigationExampleState extends State<NavigationExample> {
                 authProvider.userProvider.isLoggedIn && 
                 authProvider.userProvider.currentUser != null) {
               final userName = authProvider.userProvider.currentUser!.name;
-              return Text('Bienvenid@, $userName');
+              return Text('Bienvenid@, $userName, ${authProvider.userProvider.currentUser?.user}');
             }
             return const Text('Bienvenid@');
           },

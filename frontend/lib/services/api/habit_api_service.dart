@@ -10,7 +10,7 @@ class HabitApiService {
   static Future<List<HabitUser>> getUserHabits(String userId) async {
     try {
       final url = Uri.parse('$baseUrl/get_user_habits.php');
-      
+      print('userId: '+userId);
       final response = await http.post(
         url,
         headers: {
@@ -21,7 +21,7 @@ class HabitApiService {
         body: 'user=$userId',
       );
 
-      print(response.body);
+      print('response: '+response.body);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);

@@ -18,11 +18,16 @@ header("Content-Type: application/json; charset=UTF-8");
 
 try {
     include("../config/conexion_db.php");
-    $firebase_uid = isset($_POST['firebase_uid']) ? $_POST['firebase_uid'] : '';
+
+    $user = isset($_POST['user']) ? $_POST['user'] : '';
+    $date = isset($_POST['date']) ? $_POST['date'] : '';
+    $day = isset($_POST['day']) ? $_POST['day'] : '';
+
     $stmt = $pdo->prepare("
-            select user, name, firebase_uid from user where firebase_uid = :firebase_uid;
+            select * from habit h join user_habit uh on uh.habit = h.habit join goal g on g.user_habit = uh.user_habit where uh.user=:user and(g.repeat_h = 'daily' || (g.repeat_h = 'weekly' and find_in_set(:day, days)>0) || (g.repeat_h = 'once' && g.date_h = :date));
         ");
-    $stmt->execute([':firebase_uid' => $firebase_uid]);
+
+    $stmt->execute([':user' => $user, ':date' => $date, ':day' => $day]);
     $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
     // Return JSON response
     echo json_encode([

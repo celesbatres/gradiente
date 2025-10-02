@@ -1,29 +1,38 @@
 <?php
-header('Content-Type: application/json');
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, ngrok-skip-browser-warning');
+    header('Access-Control-Max-Age: 86400');
+    http_response_code(200);
+    exit();
+}
+
+// Set CORS headers for actual request
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, ngrok-skip-browser-warning');
+ob_clean();
+header("Content-Type: application/json; charset=UTF-8");
 
 include("../config/conexion_db.php");
 
 try {
-    $user_habit_id = $_POST['user_habit_id'] ?? null;
+    $user_habit = $_POST['user_habit'] ?? null;
     $quantity = $_POST['quantity'] ?? null;
     $days = $_POST['days'] ?? null;
-    $add_date = $_POST['add_date'] ?? date('Y-m-d');
 
     // Validar datos requeridos
-    if (!$user_habit_id) {
-        throw new Exception('user_habit_id es requerido');
+    if (!$user_habit) {
+        throw new Exception('user_habit es requerido');
     }
 
     // Insertar en goal
-    $stmt = $pdo->prepare("INSERT INTO goal (user_habit, quantity, days, actual, add_date) VALUES (:user_habit_id, :quantity, :days, 1, :add_date)");
+    $stmt = $pdo->prepare("INSERT INTO goal (user_habit, quantity, days, actual, add_date) VALUES (:user_habit, :quantity, :days, 1, CURDATE());");
     $stmt->execute(array(
-        ':user_habit_id' => $user_habit_id,
+        ':user_habit' => $user_habit,
         ':quantity' => $quantity,
         ':days' => $days,
-        ':add_date' => $add_date
     ));
 
     $goal_id = $pdo->lastInsertId();

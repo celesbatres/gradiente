@@ -7,7 +7,7 @@ header('Access-Control-Allow-Headers: Content-Type');
 include("../config/conexion_db.php");
 
 try {
-    $stmt = $pdo->prepare("SELECT register_type, name FROM register_type;");
+    $stmt = $pdo->prepare("SELECT r.register_type, r.name FROM register_type r;");
     $stmt->execute();
     $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

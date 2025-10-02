@@ -61,7 +61,6 @@ class GoalApiService {
     required int userHabitId,
     int? quantity,
     int? days,
-    String? addDate,
   }) async {
     try {
       final url = Uri.parse('$baseUrl/insert_goal.php');
@@ -73,10 +72,9 @@ class GoalApiService {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: {
-          'user_habit_id': userHabitId.toString(),
+          'user_habit': userHabitId.toString(),
           'quantity': quantity?.toString() ?? '',
           'days': days?.toString() ?? '',
-          'add_date': addDate ?? DateTime.now().toIso8601String().split('T')[0],
         },
       );
 
@@ -96,7 +94,6 @@ class GoalApiService {
     required int goalId,
     int? quantity,
     int? days,
-    bool? actual,
   }) async {
     try {
       final url = Uri.parse('$baseUrl/update_goal.php');
@@ -111,7 +108,6 @@ class GoalApiService {
           'goal_id': goalId.toString(),
           'quantity': quantity?.toString() ?? '',
           'days': days?.toString() ?? '',
-          'actual': actual?.toString() ?? '',
         },
       );
 
@@ -128,6 +124,6 @@ class GoalApiService {
 
   /// Mark a goal as completed (set actual to false)
   static Future<bool> completeGoal(int goalId) async {
-    return await updateGoal(goalId: goalId, actual: false);
+    return await updateGoal(goalId: goalId);
   }
 }

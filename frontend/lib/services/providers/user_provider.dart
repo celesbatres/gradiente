@@ -18,10 +18,12 @@ class UserProvider extends ChangeNotifier {
   // Claves para SharedPreferences
   static const String _userKey = 'user_id';
   static const String _userNameKey = 'user_name';
+  static const String _firebaseUidKey = 'firebase_uid';
 
   /// Inicializar el usuario desde SharedPreferences al iniciar la app
   Future<void> initializeUser() async {
     _setLoading(true);
+    clearError();
     
     try {
       // Verificar si hay un usuario de Firebase autenticado
@@ -35,14 +37,17 @@ class UserProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final savedUserId = prefs.getString(_userKey);
       final savedUserName = prefs.getString(_userNameKey);
+      final savedFirebaseUid = prefs.getString(_firebaseUidKey);
 
-      if (savedUserId != null && savedUserName != null) {
+      if (savedUserId != null && savedUserName != null && savedFirebaseUid != null) {
         // Usuario guardado localmente, crear objeto User
         _currentUser = UserModel.User(
           user: int.parse(savedUserId),
           name: savedUserName,
+          firebaseUid: savedFirebaseUid,
         );
         _setLoading(false);
+        notifyListeners();
         return;
       }
 
@@ -53,17 +58,20 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  /// Cargar usuario desde la API
+  /// Cargar usuario desde la API - busca o crea usuario
   Future<void> _loadUserFromApi(String firebaseUid) async {
     try {
-      final user = await UidApiService.getUserByFirebaseUid(firebaseUid);
-      if (user.existsUser()) {
-        await _setUser(user);
-      } else {
-        _setError('Usuario no encontrado en la base de datos');
-      }
+      // Obtener el nombre del usuario de Firebase
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+      final userName = firebaseUser?.displayName ?? 'Usuario';
+      
+      // Buscar o crear usuario en la base de datos
+      final user = await UidApiService.getOrCreateUser(firebaseUid, userName);
+      await _setUser(user);
     } catch (e) {
       _setError('Error al cargar usuario: $e');
+    } finally {
+      _setLoading(false);
     }
   }
 
@@ -76,27 +84,25 @@ class UserProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_userKey, user.user.toString());
     await prefs.setString(_userNameKey, user.name);
+    if (user.firebaseUid != null) {
+      await prefs.setString(_firebaseUidKey, user.firebaseUid!);
+    }
     
     notifyListeners();
   }
 
-  /// Crear nuevo usuario
+  /// Crear nuevo usuario - ahora usa getOrCreateUser
   Future<void> createUser(String firebaseUid, String name) async {
     _setLoading(true);
+    clearError();
     
     try {
-      final userId = await UidApiService.createUser(firebaseUid, name);
-      if (userId != null) {
-        final newUser = UserModel.User(
-          user: int.parse(userId),
-          name: name,
-        );
-        await _setUser(newUser);
-      } else {
-        _setError('Error al crear usuario');
-      }
+      final user = await UidApiService.getOrCreateUser(firebaseUid, name);
+      await _setUser(user);
     } catch (e) {
       _setError('Error al crear usuario: $e');
+    } finally {
+      _setLoading(false);
     }
   }
 
@@ -117,6 +123,7 @@ class UserProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_userKey);
       await prefs.remove(_userNameKey);
+      await prefs.remove(_firebaseUidKey);
       
       // Limpiar estado
       _currentUser = null;
@@ -125,6 +132,8 @@ class UserProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       _setError('Error al cerrar sesión: $e');
+    } finally {
+      _setLoading(false);
     }
   }
 

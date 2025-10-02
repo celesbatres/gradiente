@@ -11,9 +11,9 @@ class HabitUser {
 
   factory HabitUser.fromJson(Map<String, dynamic> json) {
     return HabitUser(
-      userHabitId: _parseId(json['user_habit_id'] ?? json['userHabitId']),
-      name: json['name'] ?? json['nombre'],
-      habitType: _parseId(json['habit_type_id'] ?? json['habitTypeId']),
+      userHabitId: _parseId(json['user_habit'] ?? json['userHabitId']),
+      name: json['name'] ?? json['name'],
+      habitType: _parseId(json['habit_type'] ?? json['habitTypeId']),
     );
   }
 
@@ -25,9 +25,9 @@ class HabitUser {
 
   Map<String, dynamic> toJson() {
     return {
-      'user_habit_id': userHabitId,
+      'user_habit': userHabitId,
       'name': name,
-      'habit_type_id': habitType,
+      'habit_type': habitType,
     };
   }
 

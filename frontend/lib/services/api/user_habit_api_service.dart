@@ -14,24 +14,37 @@ class UserHabitApiService {
     try {
       final url = Uri.parse('$baseUrl/insert_habit_u.php');
       
+      print('userId: '+userId.toString());
+      print('habitId: '+habitId.toString());
+      print('registerTypeId: '+registerTypeId.toString());
+      print('quantityRegister: '+quantityRegister.toString());
+      
+      final body = {
+        'user': userId.toString(),
+        'habit': habitId.toString(),
+        'register_type': registerTypeId.toString(),
+        'quantity_register': quantityRegister?.toString() ?? '',
+      };
+      
+      print('Sending body: $body');
+      
       final response = await http.post(
         url,
         headers: {
           'ngrok-skip-browser-warning': 'true',
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json',
         },
-        body: {
-          'user_id': userId.toString(),
-          'habit_id': habitId.toString(),
-          'register_type_id': registerTypeId.toString(),
-          'quantity_register': quantityRegister?.toString() ?? '',
-        },
+        body: body,
       );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         if (responseData['success'] == true) {
-          return responseData['user_habit_id'];
+          return int.parse(responseData['user_habit'].toString());
         } else {
           throw Exception('API Error: ${responseData['error'] ?? 'Unknown error'}');
         }
